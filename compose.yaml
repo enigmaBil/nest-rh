@@ -1,0 +1,33 @@
+services:
+  postgres:
+    container_name: rh_back_bd
+    image: 'postgres:latest'
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=rh_db
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=root
+    ports:
+      - 5448:5432
+    volumes:
+      - rh_pg_data:/var/lib/postgresql/data
+  pgadmin:
+    container_name: rh_pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - 5054:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@rh.tn
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    volumes:
+      - rh_pgadmin_data:/var/lib/pgadmin
+volumes:
+  rh_pg_data:
+    driver: local
+  rh_pgadmin_data:
+    driver: local
+dmin_data:
+    driver: local
