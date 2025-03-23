@@ -12,6 +12,7 @@ import { ReportsModule } from './reports/reports.module';
 import { SearchModule } from './search/search.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
+import { EmployesModule } from './employes/employes.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { EvaluationsModule } from './evaluations/evaluations.module';
     ReportsModule,
     SearchModule,
     NotificationsModule,
-    EvaluationsModule
+    EvaluationsModule,
+    EmployesModule
   ],
   controllers: [AppController],
   providers: [AppService],
