@@ -13,6 +13,7 @@ import { SearchModule } from './search/search.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { EmployesModule } from './employes/employes.module';
+import { CongerModule } from './conger/conger.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { EmployesModule } from './employes/employes.module';
     SearchModule,
     NotificationsModule,
     EvaluationsModule,
-    EmployesModule
+    EmployesModule,
+    CongerModule
   ],
   controllers: [AppController],
   providers: [AppService],
