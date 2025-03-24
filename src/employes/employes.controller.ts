@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Delete, Put } from '@nestjs/common';  
+import { Controller, Get, Param, Post, Body, Delete, Put, Query } from '@nestjs/common';  
 import { EmployesService } from './employes.service';
 import { CreateEmployeDto } from './dto/create-employe.dto';
 import { Employe } from './entities/employe.entity';
@@ -33,5 +33,10 @@ export class EmployesController {
     @Body() createEmployeDto: CreateEmployeDto,
   ): Promise<Employe> {
     return this.employesService.update(id, createEmployeDto);
+  }
+
+  @Get('search')
+  async search(@Query('nom') nom: string): Promise<Employe[]> {
+    return this.employesService.searchByName(nom);
   }
 }

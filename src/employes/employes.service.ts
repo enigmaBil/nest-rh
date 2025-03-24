@@ -1,3 +1,5 @@
+// src/employes/employes.service.ts
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -37,5 +39,13 @@ export class EmployesService {
   async remove(id: number): Promise<void> {
     const employe = await this.findOne(id);
     await this.employeRepository.delete(employe.id);
+  }
+
+  async searchByName(nom: string): Promise<Employe[]> {
+    return this.employeRepository.find({
+      where: {
+        nom: nom, 
+      },
+    });
   }
 }

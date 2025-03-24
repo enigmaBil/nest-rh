@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,27 +17,32 @@ export class CongerService {
     return this.congerRepository.save(conger);
   }
 
-  // Afficher 
+  // Afficher all
   async findAll(): Promise<Conger[]> {
     return this.congerRepository.find();
   }
 
   // Modifier 
   async update(id: number, updateCongerDto: CreateCongerDto): Promise<Conger> {
-   
     const conger = await this.congerRepository.findOne({ where: { id } });
-    
     if (!conger) {
       throw new Error('Conger not found');
     }
-
-    // Modifier
     Object.assign(conger, updateCongerDto);
     return this.congerRepository.save(conger);
   }
 
-  // Supprimer 
+  // Supprimer
   async remove(id: number): Promise<void> {
     await this.congerRepository.delete(id);
+  }
+
+  // Filtrer 
+  async filterCongersByType(type: string): Promise<Conger[]> {
+    return this.congerRepository.find({
+      where: {
+        type: type,
+      },
+    });
   }
 }
