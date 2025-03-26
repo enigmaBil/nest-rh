@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcrypt';
+import { LoginDTO } from './dto/login.dto';
+
+type AuthInput = { email: string; password: string };
+type SignInData = { id: number; email: string };
+type AuthResponse = { accessToken: string; user: SignInData };
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async authenticate(loginDTO: LoginDTO): Promise<AuthResponse> {
+    const user = await this.usersService.findUserByEmail(loginDTO);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const passwordMatched = await bcrypt.compare(
+      loginDTO.password,
+      user.password,
+    );
+
+    if (passwordMatched) {
+      const payload = { email: user.email, sub: user.id };
+      // @ts-ignore
+      delete user.password;
+      // @ts-ignore
+      delete user.id;
+      return {accessToken: this.jwtService.sign(payload), user}
+    } else {
+      throw new UnauthorizedException('Password does not match');
+    }
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async signIn(user: SignInData): Promise<AuthResponse> {
+    const payload = { email: user.email, sub: user.id };
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user,
+    };
   }
 }

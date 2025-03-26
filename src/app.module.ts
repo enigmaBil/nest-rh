@@ -17,7 +17,7 @@ import { EvaluationsModule } from './evaluations/evaluations.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env'
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     AuthModule,
@@ -27,7 +27,7 @@ import { EvaluationsModule } from './evaluations/evaluations.module';
     ReportsModule,
     SearchModule,
     NotificationsModule,
-    EvaluationsModule
+    EvaluationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

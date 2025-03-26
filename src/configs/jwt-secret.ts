@@ -1,0 +1,2 @@
+//TODO: keep this secret in a .env file in a real application
+export const JWT_SECRET = "da08063a9140095b9933ec67e3434f5486db5cb883bd498aa0a7f7d3560c2effb21cfd6474c4cf7155cf4480f3af04c561addd0f4df4d029b9ec83f1ec135e0acaf1336dbbaa0df4120ef0f148edd454c573b5efe9a80d1baa5228d3254706bcf9cb52eed42abecec0c0f8364c5c30f7b03e03bffffee5b726dbff6910eb385d";
