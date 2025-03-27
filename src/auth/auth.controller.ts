@@ -15,7 +15,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('me')
-  @UseGuards(PassportJwtGuard)
+  
   userInfo(@Request() request) {
     return request.user;
   }

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,13 +7,18 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { LoginDTO } from '../auth/dto/login.dto';
+import { UserRole } from 'src/common/role.enum';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  onModuleInit() {
+    this.createAdminUser();
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
 
@@ -25,13 +30,15 @@ export class UsersService {
     }
 
     // Hacher le mot de passe
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
 
     // Transformer le DTO en entité
-    const user = plainToInstance(User, createUserDto);
+    const user = await this.userRepository.save(plainToInstance(User, createUserDto));
+    // @ts-ignore
+    delete user.password;
     console.log(user);
-    return await this.userRepository.save(user);
+    return user;
   }
 
   async findAll(): Promise<User[]> {
@@ -77,5 +84,26 @@ export class UsersService {
       throw new NotFoundException(`L'utilisateur avec l'ID ${id} n'existe pas.`);
     }
     return user;
+  }
+
+  private async createAdminUser() {
+    console.log('creating admin user ...');
+    const adminEmail = 'admin@rh.tn';
+    const existingAdmin = await this.userRepository.findOneBy({ email: adminEmail });
+    if (!existingAdmin) {
+      const hashedPassword = await bcrypt.hash('password', 12);
+
+      const adminUser = this.userRepository.create({
+        name: 'Admin',
+        email: adminEmail,
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+      });
+
+      await this.userRepository.save(adminUser);
+      console.log('✅ Admin account created successfully!');
+    } else {
+      console.log('⚠️ Admin already exists. Skipping seeding.');
+    }
   }
 }

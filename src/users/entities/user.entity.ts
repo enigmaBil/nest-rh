@@ -20,7 +20,6 @@ export class User extends BaseEntity {
     )
     email: string;
     @Column()
-    @Exclude()
     password: string;
     @Column(
        { 

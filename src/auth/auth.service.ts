@@ -20,23 +20,21 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
-    const passwordMatched = await bcrypt.compare(
-      loginDTO.password,
-      user.password,
-    );
-
-    if (passwordMatched) {
-      const payload = { email: user.email, sub: user.id };
-      // @ts-ignore
-      delete user.password;
-      // @ts-ignore
-      delete user.id;
-      return {accessToken: this.jwtService.sign(payload), user}
-    } else {
+  
+    const passwordMatched = await bcrypt.compare(loginDTO.password, user.password);
+    if (!passwordMatched) {
       throw new UnauthorizedException('Password does not match');
     }
+  
+    const payload = { email: user.email, sub: user.id };
+    const { password, ...userWithoutPassword } = user; // Supprime le password proprement
+  
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user: userWithoutPassword,
+    };
   }
+  
 
   async signIn(user: SignInData): Promise<AuthResponse> {
     const payload = { email: user.email, sub: user.id };
