@@ -2,6 +2,7 @@ import { BaseEntity } from "src/common/base.entity";
 import { UserRole } from "src/common/role.enum";
 import { Column, Entity, Table } from "typeorm";
 import { Exclude } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User extends BaseEntity {
@@ -11,6 +12,7 @@ export class User extends BaseEntity {
             length: 191
         }
     )
+    @ApiProperty()
     name: string;
     @Column(
         {
@@ -18,9 +20,10 @@ export class User extends BaseEntity {
             unique: true,
         }
     )
+    @ApiProperty()
     email: string;
     @Column()
-    @Exclude()
+    @ApiProperty()
     password: string;
     @Column(
        { 
@@ -29,8 +32,6 @@ export class User extends BaseEntity {
         default: UserRole.USER
     }
     )
-    role: UserRole;
-
-    
-    
+    @ApiProperty()
+    role: UserRole; 
 }
