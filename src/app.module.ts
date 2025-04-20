@@ -12,6 +12,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { EmployesModule } from './employes/employes.module';
+import { CongerModule } from './conger/conger.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
     NotificationsModule,
     EvaluationsModule,
     MailModule,
+    EmployesModule,
+    CongerModule
   ],
   controllers: [],
   providers: [],

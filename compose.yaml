@@ -29,3 +29,4 @@ volumes:
     driver: local
   rh_pgadmin_data:
     driver: local
+
