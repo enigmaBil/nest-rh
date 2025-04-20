@@ -19,7 +19,7 @@ import { CongerModule } from './conger/conger.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env'
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     AuthModule,

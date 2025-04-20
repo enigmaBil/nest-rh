@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
     ports:
-      - 5448:5432
+      - "5448:5432"
     volumes:
       - rh_pg_data:/var/lib/postgresql/data
   pgadmin:
@@ -16,7 +16,7 @@ services:
     image: dpage/pgadmin4
     restart: unless-stopped
     ports:
-      - 5054:80
+      - "5054:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@rh.tn
       PGADMIN_DEFAULT_PASSWORD: admin
