@@ -11,7 +11,6 @@ import { SearchModule } from './search/search.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { MailModule } from './mail/mail.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
