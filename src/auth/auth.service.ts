@@ -1,3 +1,4 @@
+
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
@@ -15,6 +16,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+
   async authenticate(loginDTO: LoginDTO): Promise<AuthResponse> {
     const user = await this.usersService.findUserByEmail(loginDTO);
     if (!user) {
@@ -25,7 +27,7 @@ export class AuthService {
       loginDTO.password,
       user.password,
     );
-
+}
     if (passwordMatched) {
       const payload = { email: user.email, sub: user.id };
       // @ts-ignore
