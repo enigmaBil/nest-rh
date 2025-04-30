@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
+
+  
   constructor(private readonly mailerService: MailerService, private configService: ConfigService) {}
 
   async sendAccountCreationEmail(email: string, name: string, resetToken: string) {
@@ -27,6 +29,34 @@ export class MailService {
         name,
         email,
         password,
+      }
+    })
+  }
+
+  async sendTimesheetCreationEmail(email: string, name: string, date: Date, startTime: string, endTime: string, totalHours: number, description: string) {
+    throw new Error('Method not implemented.');
+  }
+  async sendTimesheetValidationEmail(email: string, name: string, date: Date) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Feuille de temps validé',
+      template: 'timesheet-validated',
+      context: {
+        name,
+        date,
+      }
+    })
+  }
+
+  async sendTimesheetRejectionEmail(email: string, name: string, date: Date, comment: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Feuille de temps rejeté',
+      template: 'timesheet-rejected',
+      context: {
+        name,
+        comment,
+        date,
       }
     })
   }
