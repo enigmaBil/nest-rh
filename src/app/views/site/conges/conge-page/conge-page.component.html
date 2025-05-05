@@ -1,1 +1,50 @@
-<p>conge-page works!</p>
+<app-breadcrumb></app-breadcrumb>
+
+<section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
+    <div class="px-4 mx-auto max-w-7xl lg:px-12">
+        <div class="overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-6">
+
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white">Mes demandes de congé</h2>
+                <a [routerLink]="['add']">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        + Nouvelle demande
+                    </button>
+                </a>
+            </div>
+
+            <ng-container *ngIf="(demandes$ | async) as demandes">
+                <div *ngIf="demandes.length > 0; else noData">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs uppercase bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <tr>
+                                <th class="px-4 py-2">Date de début</th>
+                                <th class="px-4 py-2">Date de fin</th>
+                                <th class="px-4 py-2">Statut</th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let demande of demandes"
+                                class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-4 py-2">{{ demande.dateDebut | date:'shortDate' }}</td>
+                                <td class="px-4 py-2">{{ demande.dateFin | date:'shortDate' }}</td>
+
+                                <td class="px-4 py-2" [ngClass]="getStatutStyle(demande.statut)">
+                                    {{ getStatutLibelle(demande.statut) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+
+            <ng-template #noData>
+                <div class="text-center text-gray-500 dark:text-gray-400 py-8">
+                    Aucune demande de congé pour le moment.
+                </div>
+            </ng-template>
+
+        </div>
+        </div>
+        </section>

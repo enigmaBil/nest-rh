@@ -1,1 +1,46 @@
-<p>conge-add works!</p>
+<app-breadcrumb></app-breadcrumb>
+
+<section class="bg-gray-50 dark:bg-gray-900 py-3 sm:py-5">
+  <div class="px-4 mx-auto max-w-7xl lg:px-12">
+    <div class="overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg p-6">
+      
+      <!-- Afficher un message d'erreur si nécessaire -->
+      <div *ngIf="errorMessage" class="text-red-500 mb-4">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="congeForm" (ngSubmit)="handleSubmit()">
+        <div class="mb-4">
+          <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-white">Email</label>
+          <input id="nom" formControlName="nom" type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </div>
+
+        <div class="mb-4">
+          <label for="dateDebut" class="block text-sm font-medium text-gray-700 dark:text-white">Date de début</label>
+          <input id="dateDebut" formControlName="dateDebut" type="date" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </div>
+
+        <div class="mb-4">
+          <label for="dateFin" class="block text-sm font-medium text-gray-700 dark:text-white">Date de fin</label>
+          <input id="dateFin" formControlName="dateFin" type="date" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </div>
+
+        <div class="mb-4">
+          <label for="type" class="block text-sm font-medium text-gray-700 dark:text-white">Type</label>
+          <select id="type" formControlName="type" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+            <option value="">Choisir un type</option>
+            <option value="Annual">Congé annuel</option>
+            <option value="Sick">Congé maladie</option>
+            <!-- Ajouter d'autres options de congé ici -->
+          </select>
+        </div>
+
+        <!-- Bouton de soumission -->
+        <button type="submit" [disabled]="loading" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+          Ajouter
+        </button>
+      </form>
+
+    </div>
+  </div>
+</section>
