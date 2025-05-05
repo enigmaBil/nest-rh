@@ -4,7 +4,10 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService, private configService: ConfigService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
+  ) { }
 
   async sendAccountCreationEmail(email: string, name: string, resetToken: string) {
     await this.mailerService.sendMail({
@@ -27,7 +30,20 @@ export class MailService {
         name,
         email,
         password,
-      }
-    })
+      },
+    });
   }
+
+  async sendLeaveValidationEmail(email: string, name: string, statut: 'ACCEPTE' | 'REFUSE') {
+    await this.mailerService.sendMail({
+      to: email,  // L'email du salarié qui a fait la demande
+      subject: 'Statut de votre demande de congé',
+      template: 'leave-validation',
+      context: {
+        name,  // Le nom de l'utilisateur
+        statut: statut === 'ACCEPTE' ? 'acceptée' : 'refusée',
+      },
+    });
+  }
+
 }
