@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { TimesheetStatusEnum } from '../common/timesheet-status.enum';
 import { User } from 'src/users/entities/user.entity';
 import { MailService } from 'src/mail/mail.service';
+import e from 'express';
 
 @Injectable()
 export class TimesheetsService {
@@ -20,21 +21,30 @@ export class TimesheetsService {
 
   async createTimesheet(createTimesheetDto: CreateTimesheetDto, employeID: number): Promise<Timesheet> {
     // Vérifier si l'employé existe
-    const employee = await this.userRepository.findOneBy({ id: employeID });
-
+    let employee = await this.userRepository.findOneBy({ id: employeID });
+    if(employee) {
+      let {password, ...employeeWhitoutPassword} = employee;
+      employee = employeeWhitoutPassword as User;
+    }
     if (!employee) {
       throw new NotFoundException('Employé non trouvé');
     }
 
+    const now = new Date();
+    const secondes = now.getSeconds().toString().padStart(2, '0');
+    const millisecondes = now.getMilliseconds().toString().padStart(3, '0');
+    
     const timesheet = this.timesheetRepository.create({
       ...createTimesheetDto,
       employee,
+      title : `feuille_temps_#${secondes}${millisecondes}`,
       status: TimesheetStatusEnum.PENDING,
     });
     return await this.timesheetRepository.save(timesheet);
   }
 
   async findAllTimesheets(): Promise<Timesheet[]> {
+    
     return await this.timesheetRepository.find(
       {
         relations: ['employee'],

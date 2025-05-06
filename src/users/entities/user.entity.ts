@@ -13,7 +13,6 @@ export class User extends BaseEntity {
             length: 191
         }
     )
-    @ApiProperty()
     name: string;
     @Column(
         {
@@ -24,7 +23,7 @@ export class User extends BaseEntity {
     @ApiProperty()
     email: string;
     @Column()
-    @ApiProperty()
+   
     password: string;
     @Column(
        { 
@@ -33,11 +32,14 @@ export class User extends BaseEntity {
         default: UserRole.USER
     }
     )
-    @ApiProperty()
+   
     role: UserRole; 
 
-    @OneToMany(() => User, (user) => user.timesheets, { nullable: true })
-    @Exclude({ toPlainOnly: true })
-    @ApiProperty({ type: () => User, isArray: true })
-    timesheets: Timesheet[]; // Liste des feuilles de temps associées à l'utilisateur
+    // @OneToMany(() => User, (user) => user.timesheets, { nullable: true })
+    // @Exclude({ toPlainOnly: true })
+    // @ApiProperty({ type: () => User, isArray: true })
+    // timesheets: Timesheet[]; 
+    @OneToMany(() => Timesheet, (timesheet) => timesheet.employee)
+    @ApiProperty({ type: () => Timesheet, isArray: true })
+    timesheets: Timesheet[];
 }

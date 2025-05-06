@@ -23,10 +23,10 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('API Utilisateurs')
+    .addBearerAuth()
+    .setTitle('API RH-APP')
     .setDescription('API pour gérer les utilisateurs')
     .setVersion('1.0')
-    .addTag('users')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

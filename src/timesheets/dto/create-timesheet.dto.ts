@@ -1,25 +1,25 @@
 import { ApiOperation, ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsDateString, IsMilitaryTime, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateTimesheetDto {
-  @ApiProperty()
-  @IsDateString()
+  @IsDateString({ strict: true })
+  @ApiProperty({ example: '2025-05-04' })
   date: Date;
 
-  @IsString()
-  @ApiProperty()
+  @IsMilitaryTime({ message: 'startTime must be in military time format (HH:mm)' })
+  @ApiProperty({ example: '08:00' })
   startTime: string;
 
-  @IsString()
-  @ApiProperty()
+  @IsMilitaryTime({ message: 'endTime must be in military time format (HH:mm)' })
+  @ApiProperty({ example: '17:00' })
   endTime: string;
 
-  @IsNumber({ allowNaN: false, allowInfinity: false })
-  @ApiProperty()
+  @IsNumber()
+  @ApiProperty({ example: 8 })
   totalHours: number;
 
   @IsOptional()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'Travail quotidien' })
   description?: string;
 }
