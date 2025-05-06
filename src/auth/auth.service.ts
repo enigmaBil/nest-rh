@@ -4,6 +4,7 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dto/login.dto';
 import { Response } from 'express';
+import { log } from 'console';
 
 type AuthInput = { email: string; password: string };
 type SignInData = { id: number; email: string };
@@ -18,6 +19,8 @@ export class AuthService {
 
   async authenticate(loginDTO: LoginDTO, res: Response): Promise<AuthResponse> {
     const user = await this.usersService.findUserByEmail(loginDTO.email);
+    console.log(user);
+    
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

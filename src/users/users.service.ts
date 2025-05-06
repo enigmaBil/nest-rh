@@ -40,27 +40,27 @@ export class UsersService implements OnModuleInit {
     }
     // Hacher le mot de passe
     const salt = await bcrypt.genSalt(12);
-    const password = createUserDto.password;
-    createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
+    const originalPassword = createUserDto.password;
+    createUserDto.password = await bcrypt.hash(originalPassword, salt);
 
     // Transformer le DTO en entité
-    const user = await this.userRepository.create(plainToInstance(User, createUserDto));
+    let user = await this.userRepository.create(plainToInstance(User, createUserDto));
 
     // Générer un token pour le lien de réinitialisation
     const resetToken: string = await this.generateResetToken(user);
-
-    // Envoi de l'email avec le lien de réinitialisation
-    //await this.mailService.sendAccountCreationEmail(user.email ,user.name, resetToken);
     // Envoi des parametres de connexion
-    await this.mailService.sendAccountCredentialsEmail(user.email, user.name, password);
+    await this.mailService.sendAccountCredentialsEmail(user.email, user.name, originalPassword);
     await this.userRepository.save(user);
-    // @ts-ignore
-    delete user.password;
-    return user;
+    // Supprimer le mot de passe avant de retourner l'utilisateur
+    const { password, ...userWithoutPassword } = user;
+    
+    return userWithoutPassword as User;
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    let users = await this.userRepository.find();
+    const usersWithoutPasswords = users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+    return usersWithoutPasswords as User[];
   }
 
   async findUserByEmail(email: string): Promise<User|null> {
@@ -72,6 +72,7 @@ export class UsersService implements OnModuleInit {
     if (!user) {
       throw new NotFoundException(`Aucun utilisateur trouvé avec l'email ${email}.`);
     }
+    const { password, ...userWithoutPassword } = user;
     return user;
   }
 

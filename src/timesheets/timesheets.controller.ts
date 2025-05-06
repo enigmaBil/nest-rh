@@ -6,42 +6,68 @@ import passport from 'passport';
 import { AuthGuard } from '@nestjs/passport';
 import { TimesheetStatusEnum } from 'src/common/timesheet-status.enum';
 import { Response } from 'express';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { instanceToPlain } from 'class-transformer';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorators';
+import { UserRole } from 'src/common/role.enum';
 
-@Controller('timesheets')
+@Controller('api/v1/timesheets')
+@ApiBearerAuth()
 export class TimesheetsController {
   constructor(private readonly timesheetsService: TimesheetsService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() createTimesheetDto: CreateTimesheetDto, @Req() req) {
-    return this.timesheetsService.createTimesheet(createTimesheetDto, req.user.id);
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async create(@Body() createTimesheetDto: CreateTimesheetDto, @Req() req) {
+    const result = await this.timesheetsService.createTimesheet(createTimesheetDto, req.user.id)
+    return instanceToPlain(result);
   }
 
   @Get('my-timesheets')
   @UseGuards(AuthGuard('jwt'))
-  findByStatus(@Req() req, @Query('status', new ParseEnumPipe(TimesheetStatusEnum)) status: TimesheetStatusEnum) {
-    return this.timesheetsService.findByStatus(req.user.id, status);
+  @ApiResponse({ status: 200, description: 'The records have been successfully retrieved.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async findByStatus(@Req() req, @Query('status', new ParseEnumPipe(TimesheetStatusEnum)) status: TimesheetStatusEnum) {
+    const result = await this.timesheetsService.findByStatus(req.user.id, status)
+    return instanceToPlain(result);
   }
 
   @Get()
-  findAll() {
-    return this.timesheetsService.findAllTimesheets();
+  @ApiResponse({ status: 200, description: 'The records have been successfully retrieved.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async findAll() {
+    const result = await this.timesheetsService.findAllTimesheets()
+    return instanceToPlain(result);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.timesheetsService.findOneTimesheet(id);
+  @ApiResponse({ status: 200, description: 'The records have been successfully retrieved.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const result = await this.timesheetsService.findOneTimesheet(id)
+    return instanceToPlain(result);
   }
 
   @Get('employee/:id')
-  findByEmploye(@Param('id', ParseIntPipe) id: number){
-    return this.timesheetsService.findByEmployeID(id);
+  @ApiResponse({ status: 200, description: 'The records have been successfully retrieved.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async findByEmploye(@Param('id', ParseIntPipe) id: number){
+    const result = await this.timesheetsService.findByEmployeID(id)
+    return instanceToPlain(result);
   }
 
   @Patch(':id/validate')
-  @UseGuards(AuthGuard('jwt'))
-  validate(@Param('id', ParseIntPipe) id: number, @Body() dto: ValidateTimesheetDto,) {
-    return this.timesheetsService.validateTimesheet(id, dto);
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.RH)
+  @ApiResponse({ status: 200, description: 'The records have been successfully retrieved.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
+  @ApiResponse({ status: 401, description: 'Unauthorized.'})
+  async validate(@Param('id', ParseIntPipe) id: number, @Body() dto: ValidateTimesheetDto,) {
+    const result = await this.timesheetsService.validateTimesheet(id, dto)
+    return instanceToPlain(result);
   }
 
   @Delete(':id')

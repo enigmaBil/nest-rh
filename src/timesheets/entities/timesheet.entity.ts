@@ -6,17 +6,19 @@ import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Timesheet extends BaseEntity{
+  @Column({ type: 'varchar', length: 255, update: false, nullable: true })
+  title: string;
   @ManyToOne(() => User, (user) => user.timesheets, { onDelete: 'CASCADE' })
   employee: User; // Employé associé
 
   @Column({ type: 'date' })
   date: Date;
 
-  @Column()
-  startTime: string;
+  @Column({ type: 'time', nullable: true })
+  startTime: Date;
 
-  @Column()
-  endTime: string;
+  @Column({ type: 'time', nullable: true })
+  endTime: Date;
 
   @Column('float')
   totalHours: number;
