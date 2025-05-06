@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { StatutConge } from './status.enum';
 
 @Entity()
 export class Conger {
@@ -19,6 +18,10 @@ export class Conger {
   @Column()
   type: string;
 
-  @Column()
-  statut: string; 
+  @Column({
+    type: 'enum',
+    enum: StatutConge,
+    default: StatutConge.EN_ATTENTE,
+  })
+  statut: StatutConge;
 }

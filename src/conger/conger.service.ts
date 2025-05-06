@@ -3,46 +3,49 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Conger } from './entities/conger.entity';
 import { CreateCongerDto } from './dto/create-conger.dto';
+import { StatutConge } from './entities/status.enum';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class CongerService {
   constructor(
     @InjectRepository(Conger)
     private readonly congerRepository: Repository<Conger>,
+    private readonly mailService: MailService,
   ) {}
 
-  // Ajouter 
   async create(createCongerDto: CreateCongerDto): Promise<Conger> {
-    const conger = this.congerRepository.create(createCongerDto);
+    const dtoWithDefault = {
+      ...createCongerDto,
+      statut: createCongerDto.statut ?? StatutConge.EN_ATTENTE,
+    };
+    const conger = this.congerRepository.create(dtoWithDefault);
     return this.congerRepository.save(conger);
   }
 
-  // Afficher all
   async findAll(): Promise<Conger[]> {
     return this.congerRepository.find();
   }
 
-  // Modifier 
-  async update(id: number, updateCongerDto: CreateCongerDto): Promise<Conger> {
+  async updateStatut(id: number, statut: StatutConge): Promise<Conger> {
     const conger = await this.congerRepository.findOne({ where: { id } });
-    if (!conger) {
-      throw new Error('Conger not found');
-    }
-    Object.assign(conger, updateCongerDto);
-    return this.congerRepository.save(conger);
+    if (!conger) throw new Error('Congé introuvable');
+
+    // Mettre à jour le statut du congé
+    conger.statut = statut;
+    const updatedConger = await this.congerRepository.save(conger);
+
+    // Envoi de l'email de notification au demandeur
+    await this.mailService.sendLeaveValidationEmail(
+      conger.nom,
+      conger.nom,
+      statut === StatutConge.ACCEPTE ? 'ACCEPTE' : 'REFUSE',
+    );
+
+    return updatedConger;
   }
 
-  // Supprimer
   async remove(id: number): Promise<void> {
     await this.congerRepository.delete(id);
-  }
-
-  // Filtrer 
-  async filterCongersByType(type: string): Promise<Conger[]> {
-    return this.congerRepository.find({
-      where: {
-        type: type,
-      },
-    });
   }
 }

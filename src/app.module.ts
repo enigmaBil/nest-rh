@@ -11,7 +11,7 @@ import { SearchModule } from './search/search.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EvaluationsModule } from './evaluations/evaluations.module';
 import { MailModule } from './mail/mail.module';
-
+import { CongerModule } from './conger/conger.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +28,7 @@ import { MailModule } from './mail/mail.module';
     NotificationsModule,
     EvaluationsModule,
     MailModule,
+    CongerModule,
   ],
   controllers: [],
   providers: [],
