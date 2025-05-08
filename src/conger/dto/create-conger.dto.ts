@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 // src/conger/dto/create-conger.dto.ts
-import { IsEnum, IsString, IsOptional } from 'class-validator';
+import { IsEnum, IsString, IsOptional, IsInt } from 'class-validator';
 import { StatutConge } from '../entities/status.enum';
 
 export class CreateCongerDto {
@@ -18,4 +19,8 @@ export class CreateCongerDto {
   @IsOptional()
   @IsEnum(StatutConge)
   statut?: StatutConge;
+
+  @IsOptional()
+  @IsInt()
+  userId?: number;
 }

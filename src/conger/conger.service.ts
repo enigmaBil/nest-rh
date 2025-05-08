@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Conger } from './entities/conger.entity';
@@ -15,11 +16,14 @@ export class CongerService {
   ) {}
 
   async create(createCongerDto: CreateCongerDto): Promise<Conger> {
-    const dtoWithDefault = {
-      ...createCongerDto,
-      statut: createCongerDto.statut ?? StatutConge.EN_ATTENTE,
-    };
-    const conger = this.congerRepository.create(dtoWithDefault);
+    const { userId, ...rest } = createCongerDto;
+
+    const conger = this.congerRepository.create({
+      ...rest,
+      statut: rest.statut ?? StatutConge.EN_ATTENTE,
+      user: { id: userId } as any,  // Création relation par ID
+    });
+
     return this.congerRepository.save(conger);
   }
 
@@ -28,22 +32,39 @@ export class CongerService {
   }
 
   async updateStatut(id: number, statut: StatutConge): Promise<Conger> {
-    const conger = await this.congerRepository.findOne({ where: { id } });
-    if (!conger) throw new Error('Congé introuvable');
+    const conger = await this.congerRepository.findOne({
+      where: { id },
+      relations: ['user'], // ✅ Charge la relation User
+    });
 
-    // Mettre à jour le statut du congé
+    if (!conger) {
+      throw new NotFoundException(`Congé introuvable pour l'ID ${id}`);
+
+    }
+
+    if (!Object.values(StatutConge).includes(statut)) {
+      throw new BadRequestException('Statut non valide');
+    }
+
     conger.statut = statut;
-    const updatedConger = await this.congerRepository.save(conger);
+    const updatedConger = this.congerRepository.create(conger);
 
-    // Envoi de l'email de notification au demandeur
-    await this.mailService.sendLeaveValidationEmail(
-      conger.nom,
-      conger.nom,
-      statut === StatutConge.ACCEPTE ? 'ACCEPTE' : 'REFUSE',
-    );
 
-    return updatedConger;
+    // ✅ Vérifie si conger.user est bien défini
+    if (conger.user?.email && conger.user?.name) {
+      console.log(`Email envoyé à ${conger.user.email} avec le statut ${statut}`);
+      await this.mailService.sendLeaveValidationEmail(
+        conger.user.name,
+        conger.user.email,
+        statut === StatutConge.ACCEPTE ? 'ACCEPTE' : 'REFUSE',
+
+      );
+
+    }
+    return await this.congerRepository.save(updatedConger);
+
   }
+
 
   async remove(id: number): Promise<void> {
     await this.congerRepository.delete(id);
