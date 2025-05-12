@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { EvaluationsService } from './evaluations.service';
 import { CreateEvaluationDto } from './dto/create-evaluation.dto';
 import { UpdateEvaluationDto } from './dto/update-evaluation.dto';
-
-@Controller('evaluations')
+@Controller('api/v1/evaluations')
 export class EvaluationsController {
   constructor(private readonly evaluationsService: EvaluationsService) {}
 
   @Post()
-  create(@Body() createEvaluationDto: CreateEvaluationDto) {
+  async create(@Body() createEvaluationDto: CreateEvaluationDto) {
     return this.evaluationsService.create(createEvaluationDto);
   }
 
+  // ✅ Toujours placer AVANT les routes génériques
+  @Get('employee/:id')
+  async findByEmployeeId(@Param('id', ParseIntPipe) id: number) {
+    return this.evaluationsService.findByEmployeeId(id);
+  }
+
   @Get()
-  findAll() {
+  async findAll() {
     return this.evaluationsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.evaluationsService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.evaluationsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEvaluationDto: UpdateEvaluationDto) {
-    return this.evaluationsService.update(+id, updateEvaluationDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateEvaluationDto) {
+    return this.evaluationsService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.evaluationsService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.evaluationsService.remove(id);
   }
 }

@@ -34,4 +34,5 @@ export class User extends BaseEntity {
     )
     @ApiProperty()
     role: UserRole; 
+  evaluations: any;
 }

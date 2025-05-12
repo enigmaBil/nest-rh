@@ -21,6 +21,9 @@ import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
+  findByRole(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
