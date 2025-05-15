@@ -9,7 +9,8 @@ import { BaseEntity } from 'src/common/base.entity';
 export class Conger extends BaseEntity {
   @Column()
   nom: string;
-
+  @Column({ nullable: true })
+  email: string;
   @Column()
   dateDebut: string;
 

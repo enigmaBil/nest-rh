@@ -35,15 +35,15 @@ export class MailService {
   }
 
   async sendLeaveValidationEmail(email: string, name: string, statut: 'ACCEPTE' | 'REFUSE') {
+    const statutLibelle = statut === 'ACCEPTE' ? 'acceptée' : 'refusée';
     await this.mailerService.sendMail({
-      to: email,  // L'email du salarié qui a fait la demande
+      to: email,
       subject: 'Statut de votre demande de congé',
       template: 'leave-validation',
       context: {
-        name,  // Le nom de l'utilisateur
-        statut: statut === 'ACCEPTE' ? 'acceptée' : 'refusée',
+        name,
+        statut: statutLibelle,
       },
     });
   }
-
 }
