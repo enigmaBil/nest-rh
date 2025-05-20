@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Request } from "express";
 import { JWT_SECRET } from "src/configs/jwt-secret";
+import { UserRole } from "../role.enum";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: { sub: number, email: string }) {
-        return { id: payload.sub, email: payload.email };
+    async validate(payload: { sub: number, email: string, role: string }) {
+        return { id: payload.sub, email: payload.email, role: payload.role };
     }
 }

@@ -31,7 +31,7 @@ export class AuthService {
     }
 
     // Générer les tokens
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, role: user.role };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' }); // Token court
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // Token long
 
