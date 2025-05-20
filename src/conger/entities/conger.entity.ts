@@ -1,15 +1,16 @@
 /* eslint-disable prettier/prettier */
-
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// src/conger/entities/conger.entity.ts
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { StatutConge } from './status.enum';
+import { User } from 'src/users/entities/user.entity';
+import { BaseEntity } from 'src/common/base.entity';
 
 @Entity()
-export class Conger {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Conger extends BaseEntity {
   @Column()
   nom: string;
-
+  @Column({ nullable: true })
+  email: string;
   @Column()
   dateDebut: string;
 
@@ -19,6 +20,14 @@ export class Conger {
   @Column()
   type: string;
 
-  @Column()
-  statut: string; 
+  @Column({
+    type: 'enum',
+    enum: StatutConge,
+    default: StatutConge.EN_ATTENTE,
+  })
+  statut: StatutConge;
+
+  @ManyToOne(() => User, user => user.conges, { eager: true }) // Ajout de eager loading pour accéder directement à l'email
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

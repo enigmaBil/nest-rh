@@ -8,6 +8,7 @@ export class MailService {
   
   constructor(private readonly mailerService: MailerService, private configService: ConfigService) {}
 
+
   async sendAccountCreationEmail(email: string, name: string, resetToken: string) {
     await this.mailerService.sendMail({
       to: email,
@@ -29,9 +30,23 @@ export class MailService {
         name,
         email,
         password,
-      }
-    })
+      },
+    });
   }
+
+  async sendLeaveValidationEmail(email: string, name: string, statut: 'ACCEPTE' | 'REFUSE') {
+    const statutLibelle = statut === 'ACCEPTE' ? 'acceptée' : 'refusée';
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Statut de votre demande de congé',
+      template: 'leave-validation',
+      context: {
+        name,
+        statut: statutLibelle,
+      },
+    });
+  }
+
 
   async sendTimesheetCreationEmail(email: string, name: string, date: Date, startTime: string, endTime: string, totalHours: number, description: string) {
     throw new Error('Method not implemented.');

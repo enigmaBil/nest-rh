@@ -42,4 +42,5 @@ export class User extends BaseEntity {
     @OneToMany(() => Timesheet, (timesheet) => timesheet.employee)
     @ApiProperty({ type: () => Timesheet, isArray: true })
     timesheets: Timesheet[];
+
 }
