@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Delete, Patch, Query, ParseIntPipe, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Patch, Query, ParseIntPipe, UseGuards, Req, Res, ParseEnumPipe } from '@nestjs/common';
 import { TimesheetsService } from './timesheets.service';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { ValidateTimesheetDto } from './dto/validate-timesheet.dto';
@@ -6,7 +6,10 @@ import { TimesheetStatusEnum } from 'src/common/timesheet-status.enum';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorators';
 import { UserRole } from 'src/common/role.enum';
-import { AuthGuard } from 'src/common/guards/auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { instanceToPlain } from 'class-transformer';
+import { Response } from 'express';
 
 @Controller('api/v1/timesheets')
 @ApiBearerAuth()

@@ -1,9 +1,5 @@
 /* eslint-disable prettier/prettier */
-<<<<<<< HEAD
-import { Controller, Get, Post, Param, Body, Patch } from '@nestjs/common';
-=======
 import { Controller, Get, Post, Put, Param, Body, BadRequestException, Logger, NotFoundException, Delete } from '@nestjs/common';
->>>>>>> 91fd208 (version final)
 import { CongerService } from './conger.service';
 import { CreateCongerDto } from './dto/create-conger.dto';
 import { StatutConge } from './entities/status.enum';
@@ -25,17 +21,6 @@ export class CongerController {
     return this.congerService.findAll();
   }
 
-<<<<<<< HEAD
-
-  @Patch(':id')
-  async updateStatut(
-    @Param('id') id: string,
-    @Body() updateData: { statut: StatutConge }, // ⚠️ Ce champ doit s'appeler exactement "statut"
-  ) {
-    return this.congerService.updateStatut(Number(id), updateData.statut);
-  }
-
-=======
   @Put('updateStatut/:id')
   async updateStatut(@Param('id') id: string, @Body('statut') statut: StatutConge) {
     try {
@@ -60,5 +45,4 @@ export class CongerController {
   }
 
 
->>>>>>> 91fd208 (version final)
 }

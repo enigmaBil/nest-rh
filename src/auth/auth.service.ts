@@ -36,16 +36,16 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // Token long
 
     // Définir les cookies HTTP-only
-    res.cookie('auth_token', accessToken, {
+    res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
     });
@@ -61,7 +61,7 @@ export class AuthService {
   }
 
   logout(res: Response) {
-    res.clearCookie('auth_token'); 
+    res.clearCookie('access_token'); 
     res.clearCookie('refresh_token'); 
     return { message: 'Déconnexion réussie.' };
   }
@@ -82,16 +82,16 @@ export class AuthService {
       const newRefreshToken = this.jwtService.sign({ email: user.email, sub: user.id }, { expiresIn: '7d' });
 
       // Mettre à jour les cookies
-      res.cookie('auth_token', newAccessToken, {
+      res.cookie('access_token', newAccessToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'strict',
         maxAge: 15 * 60 * 1000, // 15 minutes
       });
 
       res.cookie('refresh_token', newRefreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
       });

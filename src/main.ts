@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/http.exception-filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+   app.use(cookieParser());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.enableCors({
     origin: process.env.CORS_ORIGIN,
